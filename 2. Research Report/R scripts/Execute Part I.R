@@ -1,7 +1,7 @@
 rm(list=ls())
 
 # Load packages
-require(ggplot2)
+require(tidyverse)
 require(ggthemes)
 require(WRS2)
 require(extrafont)   			
@@ -47,18 +47,18 @@ biastrimmed <- abbias(t_estimates$tmeanmatrix, c(0,0,0))
 # Visualizes the bias for the different estimates for group 3, the group
 # with outliers
 plotdata <- rbind(data.frame(bias = biasOLS[,3],
-														 outliers = seq(from = 0, to = 10, by = 1),
+														 outliers = seq(from = 0, to = 13, by = 1),
 														 estimate = "OLS"), 
 												
 									data.frame(bias = biastrimmed[,3],
-														 outliers = seq(from = 0, to = 10, by = 1),
+														 outliers = seq(from = 0, to = 13, by = 1),
 														 estimate = "20% trimmed mean"))
 
 pdf("2. Research report/Latex files/partI_biasplot_pop1.pdf", family="CM Roman", width=6, height=4)
 
 ggplot(plotdata, aes(x=outliers, y=bias))+
 	geom_line(aes(linetype=estimate))+
-	scale_x_continuous(breaks=c(0, 2, 4, 6, 8, 10))+
+	scale_x_continuous(breaks=c(1, 3, 5, 7, 9, 11, 13))+
 	scale_linetype_discrete(name="Mean estimator")+
 	labs(x = "Number of outliers", y = "Size of absolute bias")+
 	theme_few()
@@ -82,23 +82,23 @@ cov_t <- covprob(t_estimates$tmeanmatrix, t_estimates$trimSEmatrix,
 # three groups
 plotdata <- rbind(
 	data.frame(cov_prob = c(covOLS[,1], covOLS[,2], covOLS[,3]), 
-						 group = rep(1:3, each=11),
-						 outliers = rep(seq(from = 0, to = 10, by =1), 3),
+						 group = rep(1:3, each=14),
+						 outliers = rep(seq(from = 0, to = 13, by =1), 3),
 						 estimate = "OLS"),
 	
 	data.frame(cov_prob = c(cov_t[,1], cov_t[,2], cov_t[,3]), 
-						 group = rep(1:3, each=11),
-						 outliers = rep(seq(from = 0, to = 10, by =1), 3),
+						 group = rep(1:3, each=14),
+						 outliers = rep(seq(from = 0, to = 13, by =1), 3),
 						 estimate = "20% trimmed mean")
 )
 
 pdf("2. Research report/Latex files/partI_covplot_pop1.pdf", family="CM Roman", width=6, height=4)
 
 ggplot(plotdata, aes(x=outliers, y=cov_prob))+
-	geom_line(aes(linetype=factor(group)))+
-	geom_hline(yintercept = 0.95, linetype="dotted") + 
+	geom_hline(yintercept = 0.95, color = "gray", size = 2, alpha = 1/2) + 
 	annotate("text", max(plotdata$outliers)-0.5, 0.95, vjust = 1.5, label = "95%")+
-	scale_x_continuous(breaks=c(0,2,4,6,8,10))+
+	geom_line(aes(linetype=factor(group)))+
+	scale_x_continuous(breaks=c(1,3,5,7,9,11))+
 	scale_linetype_discrete(name="Group")+
 	labs(x = "Number of outliers", y = "95% CI coverage probability")+
 	facet_wrap(~estimate, ncol = 2)+

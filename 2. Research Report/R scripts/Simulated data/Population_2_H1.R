@@ -2,7 +2,7 @@
 set.seed (2016)
 
 # create groups
-group <- rep(1:3, each = 50)
+group <- rep(1:3, each = 65)
 
 # sample 1,000 times from population
 data <- list(NA)
@@ -23,11 +23,11 @@ for (r in 1:1000) {
 # add outliers to the third group 
 outdata <- list(data)                              # storage room
 
-for (p in 1:10) {
+for (p in 1:13) {
 	copy <- data 
 	
 	for (r in 1:length(data)) {
-		index <- sample(101:150, size = p)                # random case
+		index <- sample(131:195, size = p)                # random case
 		
 		med3 <- median(data[[r]]$y[data[[r]]$group==3])   # median group 3
 		madn3 <- mad(data[[r]]$y[data[[r]]$group==3])     # MADN group 3
@@ -40,7 +40,7 @@ for (p in 1:10) {
 }
 
 # Name list elements
-names(outdata) <- paste("datamatrices with", seq(from = 0, to = 10), "outlier(s)")
+names(outdata) <- paste("datamatrices with", seq(from = 0, to = 13), "outlier(s)")
 
 rm(copy, data, group, i, index, madn3, med3, p, r, y)
 
