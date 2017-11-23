@@ -17,7 +17,7 @@ source("2. Research Report/R scripts/Functions/Performance evaluation.R")
 
 # Data H0
 # ----------------------------------------------------------------------- #
-source("2. Research Report/R scripts/R scripts/Simulated data/Population_1_H0.R") 
+source("2. Research Report/R scripts/Simulated data/Population_1_H0.R") 
 # Each element of the list contains 1,000 datasets 
 pop1 <- outdata    
 rm(outdata)
@@ -105,8 +105,6 @@ ggplot(plotdata, aes(x=outliers, y=cov_prob))+
 	theme_few()
 
 dev.off()
-
-plotdata
 
 # ----------------------------------------------------------------------- #
 # --------------------------- Population 2 ------------------------------ #
