@@ -34,10 +34,10 @@ OLSestimation <- function(data) {
 	
 	# Name list elements
 	names(OLSmatrix) <- paste("OLS estimates for datamatrices with", 
-														seq(from = 0, to = 10), "outlier(s)")
+														seq(from = 0, to = length(data)-1), "outlier(s)")
 	
 	names(OLSSEmatrix) <- paste("OLS SE estimates for datamatrices with", 
-														seq(from = 0, to = 10), "outlier(s)")
+														seq(from = 0, to = length(data)-1), "outlier(s)")
 	# output 
 	list(OLSmatrix=OLSmatrix, SEmatrix=OLSSEmatrix)
 }

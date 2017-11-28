@@ -1,6 +1,3 @@
-# set random seed 
-set.seed (2016)
-
 # create groups
 group <- rep(1:3, each = 65)
 
@@ -33,7 +30,7 @@ for (p in 1:13) {
 		madn3 <- mad(data[[r]]$y[data[[r]]$group==3])     # MADN group 3
 		
 		# Replace random case by outlier 
-		copy[[r]]$y[index] <- med3 + runif(n = p, min = 2.5, max = 5)*madn3
+		copy[[r]]$y[index] <- med3 - runif(n = p, min = 2.5, max = 5)*madn3
 	}
 	
 	outdata[[p+1]] <- copy

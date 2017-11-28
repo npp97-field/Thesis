@@ -4,7 +4,7 @@ abbias <- function(estimates, mu_vector) {
 	
 	# For each condition (number of outliers) 
 	for (p in 1:length(estimates)) {
-		biasmatrix[p,] <- apply(estimates[[p]], 2, mean)-mu_vector
+		biasmatrix[p,] <- abs(apply(estimates[[p]], 2, mean)-mu_vector)
 	}
 	
 	# Output
