@@ -23,10 +23,6 @@ round(runif(n = 1, min = 1, max = 3),0)
 # ------------------------------ PART 1 --------------------------------- #
 # ----------------------------------------------------------------------- #
 
-# ----------------------------------------------------------------------- #
-# --------------------------- Population 1 ------------------------------ #
-# ----------------------------------------------------------------------- #
-
 # Data H0
 # ----------------------------------------------------------------------- #
 source("2. Research Report/R scripts/Simulated data/Population_1_H0.R") 
@@ -119,11 +115,6 @@ ggplot(plotdata, aes(x=outliers, y=cov_prob))+
 dev.off()
 
 # ----------------------------------------------------------------------- #
-# --------------------------- Population 2 ------------------------------ #
-# ----------------------------------------------------------------------- #
-
-
-# ----------------------------------------------------------------------- #
 # ------------------------------ PART 2 --------------------------------- #
 # ----------------------------------------------------------------------- #
 
@@ -131,147 +122,59 @@ dev.off()
 # --------------------------- Population 1 ------------------------------ #
 # ----------------------------------------------------------------------- #
 
-# Calculate BFs with OLS estimates
-all.est <- OLS_estimates$OLSmatrix
-all.se <- OLS_estimates$SEmatrix
+# Calculate the Bayes factors for the hypothesis with the OLS estimates as 
+# input for Bain. 
 
-system.time(BFresultsOLS <- BFcalc(estimates = all.est, se = all.se))   # Takes about 20 min.
+# Calculate BFs with OLS estimates (note : can take a while)
+BFresultsOLS <- BFcalc(estimates = OLS_estimates$OLSmatrix, 
+											 se = OLS_estimates$SEmatrix)
 
-# Obtain results
+# Calculate BFs with trimmed mean estimates (note : can take a while)
+BFresultstrimmed <- BFcalc(estimates = t_estimates$tmeanmatrix, 
+													 se = t_estimates$trimSEmatrix)
+
+# Substract results to make a plot 
 all.BFOLS <- BFresultsOLS$all.BF
-all.PMPbOLS <- BFresultsOLS$all.PMPb
+all.BFtrimmed <- BFresultstrimmed$all.BF
 
-resBF <- t(sapply(all.BFOLS, colMeans))
-resPMPb <- t(sapply(all.PMPbOLS, colMeans))
+# Transform result into plottable data
+BFOLS <- all.BFOLS %>% 
+	sapply(colMeans) %>%
+	t() %>%
+	as_tibble() %>%
+	rename(BF1u = V1) %>%
+	rename(BF2u = V2) %>%
+	mutate(BF12 = BF1u/BF2u) %>%
+	gather() %>%
+	cbind(Estimate = "OLS", Outliers = seq(0, 13, 1)) %>%
+	as_tibble() %>%
+	rename(BF = key)
 
-resBF <- tbl_df(resBF)
-resPMPb <- tbl_df(resPMPb)
-
-information <- data.frame(BF = "BF1u", 
-													Estimate = "OLS", 
-													Outliers = seq(from = 0, to = 13, by = 1)) 
-
-BF1uOLS <- resBF %>% 
-	rename(Value = V1) %>%
-	select(Value) %>%
-	cbind(information)
-
-information$BF <- "BF2u"
-
-BF2uOLS <- resBF %>% 
-	rename(Value = V2) %>%
-	select(Value) %>%
-	cbind(information)
-
-information$BF <- "BF12"
-
-BF12OLS <- resBF %>% 
-	mutate(Value = V1/V2) %>%
-	select(Value) %>%
-	cbind(information)
-	
-BFOLS <- rbind(BF1uOLS, BF2uOLS, BF12OLS)
-
-information <- information[,-1]
-information$PMPB <- "PMP_H1"
-
-PMP.H1.OLS <- resPMPb %>%
-	rename(Value = V1) %>%
-	select(Value) %>%
-	cbind(information)
-
-information$PMPB <- "PMP_H2"
-
-PMP.H2.OLS <- resPMPb %>%
-	rename(Value = V2) %>%
-	select(Value) %>%
-	cbind(information)
-
-PMPbOLS <- rbind(PMP.H1.OLS, PMP.H2.OLS)
-
-# Calculate BFs with trimmed mean estimates
-all.est.t <- t_estimates$tmeanmatrix
-all.se.t <- t_estimates$trimSEmatrix
-
-system.time(BFresultstrimmed <- BFcalc(estimates = all.est.t, se = all.se.t))   # Takes about 25 min. 
-
-# Obtain results
-all.BFOLS <- BFresultstrimmed$all.BF
-all.PMPbOLS <- BFresultstrimmed$all.PMPb
-
-resBF <- t(sapply(all.BFOLS, colMeans))
-resPMPb <- t(sapply(all.PMPbOLS, colMeans))
-
-resBF <- tbl_df(resBF)
-resPMPb <- tbl_df(resPMPb)
-
-information <- data.frame(BF = "BF1u", 
-													Estimate = "20% trimmed mean", 
-													Outliers = seq(from = 0, to = 13, by = 1)) 
-
-BF1utrimmed <- resBF %>% 
-	rename(Value = V1) %>%
-	select(Value) %>%
-	cbind(information)
-
-information$BF <- "BF2u"
-
-BF2utrimmed <- resBF %>% 
-	rename(Value = V2) %>%
-	select(Value) %>%
-	cbind(information)
-
-information$BF <- "BF12"
-
-BF12trimmed <- resBF %>% 
-	mutate(Value = V1/V2) %>%
-	select(Value) %>%
-	cbind(information)
-
-BFtrimmed <- rbind(BF1utrimmed, BF2utrimmed, BF12trimmed)
-
-information <- information[,-1]
-information$PMPB <- "PMP_H1"
-
-PMP.H1.t <- resPMPb %>%
-	rename(Value = V1) %>%
-	select(Value) %>%
-	cbind(information)
-
-information$PMPB <- "PMP_H2"
-
-PMP.H2.t <- resPMPb %>%
-	rename(Value = V2) %>%
-	select(Value) %>%
-	cbind(information)
-
-PMPbtrimmed <- rbind(PMP.H1.t, PMP.H2.t)
+BFtrimmed <- all.BFtrimmed %>% 
+	sapply(colMeans) %>%
+	t() %>%
+	as_tibble() %>%
+	rename(BF1u = V1) %>%
+	rename(BF2u = V2) %>%
+	mutate(BF12 = BF1u/BF2u) %>%
+	gather() %>%
+	cbind(Estimate = "20% trimmed mean", Outliers = seq(0, 13, 1)) %>%
+	as_tibble() %>%
+	rename(BF = key)
 
 BFplotdata <- rbind(BFOLS, BFtrimmed)
-PMPBplotdata <- rbind(PMPbOLS, PMPbtrimmed)
 
 # Plot results
-pdf("2. Research report/Latex files/partII_BF_pop1.pdf", family="CM Roman", width=6, height=4)
+# pdf("2. Research report/Latex files/partII_BF_pop1.pdf", family="CM Roman", width=6, height=4)
 
-ggplot(data = BFplotdata, aes(x = Outliers, y = Value, linetype = BF)) +
+ggplot(data = BFplotdata, aes(x = Outliers, y = value, linetype = BF)) +
 	geom_line() +
 	scale_x_continuous(breaks=c(1, 3, 5, 7, 9, 11, 13)) +
 	facet_grid(.~Estimate) +
 	labs(x = "Number of outliers", y = "Size Bayes factor") +
 	theme_few() 
 
-dev.off()
-
-pdf("2. Research report/Latex files/partII_PMP_pop1.pdf", family="CM Roman", width=6, height=4)
-
-ggplot(data = PMPBplotdata, aes(x = Outliers, y = Value, linetype = PMPB)) +
-	geom_line() +
-	scale_x_continuous(breaks=c(1, 3, 5, 7, 9, 11, 13)) +
-	facet_grid(.~Estimate) +
-	labs(x = "Number of outliers", y = "Size Posterior Model Probability (b)") +
-	theme_few() 
-
-dev.off()
+# dev.off()
 
 # ----------------------------------------------------------------------- #
 # --------------------------- Population 2  ------------------------------ #
@@ -289,148 +192,56 @@ rm(outdata)
 OLS_estimates <- OLSestimation(pop2)
 t_estimates <- tmean(pop2, 0.2)
 
-# BF calculation 
-# ----------------------------------------------------------------------- #
-# Calculate BFs with OLS estimates
-all.est <- OLS_estimates$OLSmatrix
-all.se <- OLS_estimates$SEmatrix
+# Calculate the Bayes factors for the hypothesis with the OLS estimates as 
+# input for Bain. 
 
-system.time(BFresultsOLS <- BFcalc(estimates = all.est, se = all.se))   # Takes about 20 min.
+# Calculate BFs with OLS estimates (note : can take a while)
+BFresultsOLS <- BFcalc(estimates = OLS_estimates$OLSmatrix, 
+											 se = OLS_estimates$SEmatrix)
 
-# Obtain results
+# Calculate BFs with trimmed mean estimates (note : can take a while)
+BFresultstrimmed <- BFcalc(estimates = t_estimates$tmeanmatrix, 
+													 se = t_estimates$trimSEmatrix)
+
+# Substract results to make a plot 
 all.BFOLS <- BFresultsOLS$all.BF
-all.PMPbOLS <- BFresultsOLS$all.PMPb
+all.BFtrimmed <- BFresultstrimmed$all.BF
 
-resBF <- t(sapply(all.BFOLS, colMeans))
-resPMPb <- t(sapply(all.PMPbOLS, colMeans))
+# Transform result into plottable data
+BFOLS <- all.BFOLS %>% 
+	sapply(colMeans) %>%
+	t() %>%
+	as_tibble() %>%
+	rename(BF1u = V1) %>%
+	rename(BF2u = V2) %>%
+	mutate(BF12 = BF1u/BF2u) %>%
+	gather() %>%
+	cbind(Estimate = "OLS", Outliers = seq(0, 13, 1)) %>%
+	as_tibble() %>%
+	rename(BF = key)
 
-resBF <- tbl_df(resBF)
-resPMPb <- tbl_df(resPMPb)
-
-information <- data.frame(BF = "BF1u", 
-													Estimate = "OLS", 
-													Outliers = seq(from = 0, to = 13, by = 1)) 
-
-BF1uOLS <- resBF %>% 
-	rename(Value = V1) %>%
-	select(Value) %>%
-	cbind(information)
-
-information$BF <- "BF2u"
-
-BF2uOLS <- resBF %>% 
-	rename(Value = V2) %>%
-	select(Value) %>%
-	cbind(information)
-
-information$BF <- "BF12"
-
-BF12OLS <- resBF %>% 
-	mutate(Value = V1/V2) %>%
-	select(Value) %>%
-	cbind(information)
-
-BFOLS <- rbind(BF1uOLS, BF2uOLS, BF12OLS)
-
-information <- information[,-1]
-information$PMPB <- "PMP_H1"
-
-PMP.H1.OLS <- resPMPb %>%
-	rename(Value = V1) %>%
-	select(Value) %>%
-	cbind(information)
-
-information$PMPB <- "PMP_H2"
-
-PMP.H2.OLS <- resPMPb %>%
-	rename(Value = V2) %>%
-	select(Value) %>%
-	cbind(information)
-
-PMPbOLS <- rbind(PMP.H1.OLS, PMP.H2.OLS)
-
-# Calculate BFs with trimmed mean estimates
-all.est.t <- t_estimates$tmeanmatrix
-all.se.t <- t_estimates$trimSEmatrix
-
-system.time(BFresultstrimmed <- BFcalc(estimates = all.est.t, se = all.se.t))   # Takes about 25 min. 
-
-# Obtain results
-all.BFOLS <- BFresultstrimmed$all.BF
-all.PMPbOLS <- BFresultstrimmed$all.PMPb
-
-resBF <- t(sapply(all.BFOLS, colMeans))
-resPMPb <- t(sapply(all.PMPbOLS, colMeans))
-
-resBF <- tbl_df(resBF)
-resPMPb <- tbl_df(resPMPb)
-
-information <- data.frame(BF = "BF1u", 
-													Estimate = "20% trimmed mean", 
-													Outliers = seq(from = 0, to = 13, by = 1)) 
-
-BF1utrimmed <- resBF %>% 
-	rename(Value = V1) %>%
-	select(Value) %>%
-	cbind(information)
-
-information$BF <- "BF2u"
-
-BF2utrimmed <- resBF %>% 
-	rename(Value = V2) %>%
-	select(Value) %>%
-	cbind(information)
-
-information$BF <- "BF12"
-
-BF12trimmed <- resBF %>% 
-	mutate(Value = V1/V2) %>%
-	select(Value) %>%
-	cbind(information)
-
-BFtrimmed <- rbind(BF1utrimmed, BF2utrimmed, BF12trimmed)
-
-information <- information[,-1]
-information$PMPB <- "PMP_H1"
-
-PMP.H1.t <- resPMPb %>%
-	rename(Value = V1) %>%
-	select(Value) %>%
-	cbind(information)
-
-information$PMPB <- "PMP_H2"
-
-PMP.H2.t <- resPMPb %>%
-	rename(Value = V2) %>%
-	select(Value) %>%
-	cbind(information)
-
-PMPbtrimmed <- rbind(PMP.H1.t, PMP.H2.t)
+BFtrimmed <- all.BFtrimmed %>% 
+	sapply(colMeans) %>%
+	t() %>%
+	as_tibble() %>%
+	rename(BF1u = V1) %>%
+	rename(BF2u = V2) %>%
+	mutate(BF12 = BF1u/BF2u) %>%
+	gather() %>%
+	cbind(Estimate = "20% trimmed mean", Outliers = seq(0, 13, 1)) %>%
+	as_tibble() %>%
+	rename(BF = key)
 
 BFplotdata <- rbind(BFOLS, BFtrimmed)
-PMPBplotdata <- rbind(PMPbOLS, PMPbtrimmed)
 
 # Plot results
-pdf("2. Research report/Latex files/partII_BF_pop2.pdf", family="CM Roman", width=6, height=4)
+# pdf("2. Research report/Latex files/partII_BF_pop2.pdf", family="CM Roman", width=6, height=4)
 
-ggplot(data = BFplotdata, aes(x = Outliers, y = Value, linetype = BF)) +
+ggplot(data = BFplotdata, aes(x = Outliers, y = value, linetype = BF)) +
 	geom_line() +
 	scale_x_continuous(breaks=c(1, 3, 5, 7, 9, 11, 13)) +
 	facet_grid(.~Estimate) +
-	labs(x = "Number of outliers", y = "Size Bayes factor")+
+	labs(x = "Number of outliers", y = "Size Bayes factor") +
 	theme_few() 
 
-dev.off()
-
-pdf("2. Research report/Latex files/partII_PMP_pop2.pdf", family="CM Roman", width=6, height=4)
-
-ggplot(data = PMPBplotdata, aes(x = Outliers, y = Value, linetype = PMPB)) +
-	geom_line() +
-	scale_x_continuous(breaks=c(1, 3, 5, 7, 9, 11, 13)) +
-	facet_grid(.~Estimate) +
-	labs(x = "Number of outliers", y = "Size Posterior Model Probability (b)") +
-	theme_few() 
-
-dev.off()
-
-
+# dev.off()

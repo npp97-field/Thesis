@@ -17,10 +17,10 @@ covprob <- function(parestimates, SE, mu_vector, type) {
  	covprob <- matrix(NA, nrow=length(parestimates), ncol=3)
 	
 	# Define critical value if type = 1 (OLS estimates)
-	if(type==1) {t <- qt(.975, df=50-1)}
+	if(type==1) {t <- qt(.975, df=65-1)}
 	
 	# Define critical value if type = 2 (20% trimmed mean)
-	if(type==2) {t <- qt(.975, df=50-(2*0.2*50)-1)} 
+	if(type==2) {t <- qt(.975, df=65-(2*0.2*50)-1)} 
 	
 	# For each condition (number of outliers) 
 	for (p in 1:length(parestimates)) {
