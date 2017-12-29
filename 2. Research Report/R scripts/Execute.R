@@ -36,20 +36,27 @@ rm(outdata)
 # Stored in a list, each element containing a matrix of which
 # the rows are the samples, columns are the groups
 OLS_estimates <- OLSestimation(pop1)
+dput(OLS_estimates, "2. Research Report/R scripts/Data/OLS_estimates.txt")
 
 # Calculate 20% trimmed mean estimates for each sample
 # Stored in a matrix, rows are the samples, columns are the groups
 t_estimates <- tmean(pop1, tr = 0.2)
+dput(t_estimates, "2. Research Report/R scripts/Data/t_estimates.txt")
 
 # Absolute bias
 # ----------------------------------------------------------------------- #
 # Calculate the aboslute bias for each condition (number of outliers) for
 # the OLS estimates
 biasOLS <- abbias(OLS_estimates$OLSmatrix, c(0,0,0))
+dput(biasOLS, "2. Research Report/R scripts/Data/biasOLS.txt")
+biasOLS <- dget("2. Research Report/R scripts/Data/biasOLS.txt")
+
 
 # Calculate the aboslute bias for each condition (number of outliers) for
 # the 20% trimmed mean estimates
 biastrimmed <- abbias(t_estimates$tmeanmatrix, c(0,0,0))
+dput(biastrimmed, "2. Research Report/R scripts/Data/biastrimmed.txt")
+biastrimmed <- dget("2. Research Report/R scripts/Data/biastrimmed.txt")
 
 # Bias plot
 # Visualizes the bias for the different estimates for group 3, the group
@@ -64,12 +71,13 @@ plotdata <- rbind(data.frame(bias = biasOLS[,3],
 
 pdf("2. Research report/Latex files/partI_biasplot_pop1.pdf", family="CM Roman", width=6, height=4)
 
-ggplot(plotdata, aes(x=outliers, y=bias))+
-	geom_line(aes(linetype=estimate))+
-	scale_x_continuous(breaks=c(1, 3, 5, 7, 9, 11, 13))+
-	scale_linetype_discrete(name="Mean estimator")+
-	labs(x = "Number of outliers", y = "Size of absolute bias")+
-	theme_few()
+ggplot(plotdata, aes(x=outliers, y=bias)) +
+	geom_line(aes(linetype=estimate)) +
+	scale_x_continuous(breaks=c(1, 3, 5, 7, 9, 11, 13)) +
+	scale_linetype_discrete(name="Mean estimator") +
+	labs(x = "Number of outliers", y = "Size of absolute bias") +
+	theme_few() +
+	theme(text=element_text(family="Georgia"))
 
 dev.off()
 
@@ -79,11 +87,15 @@ dev.off()
 # for the OLS estimates
 covOLS <- covprob(OLS_estimates$OLSmatrix, OLS_estimates$SEmatrix, 
 									c(0,0,0), type=1)
+dput(covOLS, "2. Research Report/R scripts/Data/covOLS.txt")
+covOLS <- dget("2. Research Report/R scripts/Data/covOLS.txt")
 
 # Calculate the coverage probability for each condition (number of outliers) 
 # for the 20% trimmed mean estimates
 cov_t <- covprob(t_estimates$tmeanmatrix, t_estimates$trimSEmatrix, 
 									c(0,0,0), type=2)
+dput(cov_t, "2. Research Report/R scripts/Data/cov_t.txt")
+cov_t <- dget("2. Research Report/R scripts/Data/cov_t.txt")
 
 # Coverage probability plot
 # Visualizes the coverage probability for the different estimates for the
@@ -110,7 +122,8 @@ ggplot(plotdata, aes(x=outliers, y=cov_prob))+
 	scale_linetype_discrete(name="Group")+
 	labs(x = "Number of outliers", y = "95% CI coverage probability")+
 	facet_wrap(~estimate, ncol = 2)+
-	theme_few()
+	theme_few()+
+	theme(text=element_text(family="Georgia"))
 
 dev.off()
 
@@ -128,10 +141,14 @@ dev.off()
 # Calculate BFs with OLS estimates (note : can take a while)
 BFresultsOLS <- BFcalc(estimates = OLS_estimates$OLSmatrix, 
 											 se = OLS_estimates$SEmatrix)
+dput(BFresultsOLS, "2. Research Report/R scripts/Data/BFresultsOLS.txt")
+BFresultsOLS <- dget("2. Research Report/R scripts/Data/BFresultsOLS.txt")
 
 # Calculate BFs with trimmed mean estimates (note : can take a while)
 BFresultstrimmed <- BFcalc(estimates = t_estimates$tmeanmatrix, 
 													 se = t_estimates$trimSEmatrix)
+dput(BFresultstrimmed, "2. Research Report/R scripts/Data/BFresultstrimmed.txt")
+BFresultstrimmed <- dget("2. Research Report/R scripts/Data/BFresultstrimmed.txt")
 
 # Substract results to make a plot 
 all.BFOLS <- BFresultsOLS$all.BF
@@ -164,17 +181,22 @@ BFtrimmed <- all.BFtrimmed %>%
 
 BFplotdata <- rbind(BFOLS, BFtrimmed)
 
+BFplotdata$BF <- factor(BFplotdata$BF, levels = c("BF1u", "BF2u", "BF12"))
+
 # Plot results
-# pdf("2. Research report/Latex files/partII_BF_pop1.pdf", family="CM Roman", width=6, height=4)
+pdf("2. Research report/Latex files/partII_BF_pop1.pdf", family="CM Roman", width=6, height=4)
 
 ggplot(data = BFplotdata, aes(x = Outliers, y = value, linetype = BF)) +
 	geom_line() +
 	scale_x_continuous(breaks=c(1, 3, 5, 7, 9, 11, 13)) +
 	facet_grid(.~Estimate) +
-	labs(x = "Number of outliers", y = "Size Bayes factor") +
-	theme_few() 
+	scale_linetype_manual(values=c("solid", "dashed", "dotted")) +
+	labs(x = "Number of outliers", y = "Mean size Bayes factor") +
+	theme_few() +
+  coord_cartesian(ylim = c(0, 50))+
+	theme(text=element_text(family="Georgia"))
 
-# dev.off()
+dev.off()
 
 # ----------------------------------------------------------------------- #
 # --------------------------- Population 2  ------------------------------ #
@@ -189,26 +211,35 @@ rm(outdata)
 
 # Estimation P2
 # ----------------------------------------------------------------------- #
-OLS_estimates <- OLSestimation(pop2)
-t_estimates <- tmean(pop2, 0.2)
+OLS_estimates_pop2 <- OLSestimation(pop2)
+dput(OLS_estimates_pop2, "2. Research Report/R scripts/Data/OLS_estimates_pop2.txt")
+
+t_estimates_pop2 <- tmean(pop2, 0.2)
+dput(t_estimates_pop2, "2. Research Report/R scripts/Data/t_estimates_pop2.txt")
 
 # Calculate the Bayes factors for the hypothesis with the OLS estimates as 
 # input for Bain. 
 
 # Calculate BFs with OLS estimates (note : can take a while)
-BFresultsOLS <- BFcalc(estimates = OLS_estimates$OLSmatrix, 
-											 se = OLS_estimates$SEmatrix)
+BFresultsOLS_pop2 <- BFcalc(estimates = OLS_estimates_pop2$OLSmatrix, 
+											 se = OLS_estimates_pop2$SEmatrix)
+dput(BFresultsOLS_pop2, "2. Research Report/R scripts/Data/BFresultsOLS_pop2.txt")
+BFresultsOLS_pop2 <- dget("2. Research Report/R scripts/Data/BFresultsOLS_pop2.txt")
+
 
 # Calculate BFs with trimmed mean estimates (note : can take a while)
-BFresultstrimmed <- BFcalc(estimates = t_estimates$tmeanmatrix, 
-													 se = t_estimates$trimSEmatrix)
+BFresultstrimmed_pop2 <- BFcalc(estimates = t_estimates_pop2$tmeanmatrix, 
+													 se = t_estimates_pop2$trimSEmatrix)
+dput(BFresultstrimmed_pop2, "2. Research Report/R scripts/Data/BFresultstrimmed_pop2.txt")
+BFresultstrimmed_pop2 <- dget("2. Research Report/R scripts/Data/BFresultstrimmed_pop2.txt")
+
 
 # Substract results to make a plot 
-all.BFOLS <- BFresultsOLS$all.BF
-all.BFtrimmed <- BFresultstrimmed$all.BF
+all.BFOLS_pop2 <- BFresultsOLS_pop2$all.BF
+all.BFtrimmed_pop2 <- BFresultstrimmed_pop2$all.BF
 
 # Transform result into plottable data
-BFOLS <- all.BFOLS %>% 
+BFOLS <- all.BFOLS_pop2 %>% 
 	sapply(colMeans) %>%
 	t() %>%
 	as_tibble() %>%
@@ -220,7 +251,7 @@ BFOLS <- all.BFOLS %>%
 	as_tibble() %>%
 	rename(BF = key)
 
-BFtrimmed <- all.BFtrimmed %>% 
+BFtrimmed <- all.BFtrimmed_pop2 %>% 
 	sapply(colMeans) %>%
 	t() %>%
 	as_tibble() %>%
@@ -234,14 +265,19 @@ BFtrimmed <- all.BFtrimmed %>%
 
 BFplotdata <- rbind(BFOLS, BFtrimmed)
 
+BFplotdata$BF <- factor(BFplotdata$BF, levels = c("BF1u", "BF2u", "BF12"))
+
 # Plot results
-# pdf("2. Research report/Latex files/partII_BF_pop2.pdf", family="CM Roman", width=6, height=4)
+pdf("2. Research report/Latex files/partII_BF_pop2.pdf", family="CM Roman", width=6, height=4)
 
 ggplot(data = BFplotdata, aes(x = Outliers, y = value, linetype = BF)) +
 	geom_line() +
 	scale_x_continuous(breaks=c(1, 3, 5, 7, 9, 11, 13)) +
 	facet_grid(.~Estimate) +
-	labs(x = "Number of outliers", y = "Size Bayes factor") +
-	theme_few() 
+	scale_linetype_manual(values=c("solid", "dashed", "dotted")) +
+	labs(x = "Number of outliers", y = "Mean size Bayes factor") +
+	theme_few() +
+	coord_cartesian(ylim = c(0, 50))+
+	theme(text=element_text(family="Georgia"))
 
-# dev.off()
+dev.off()
