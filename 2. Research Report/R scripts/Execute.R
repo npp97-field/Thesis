@@ -36,27 +36,27 @@ rm(outdata)
 # Stored in a list, each element containing a matrix of which
 # the rows are the samples, columns are the groups
 OLS_estimates <- OLSestimation(pop1)
-dput(OLS_estimates, "2. Research Report/R scripts/Data/OLS_estimates.txt")
+dput(OLS_estimates, "2. Research Report/R scripts/Saved results/OLS_estimates.txt")
 
 # Calculate 20% trimmed mean estimates for each sample
 # Stored in a matrix, rows are the samples, columns are the groups
 t_estimates <- tmean(pop1, tr = 0.2)
-dput(t_estimates, "2. Research Report/R scripts/Data/t_estimates.txt")
+dput(t_estimates, "2. Research Report/R scripts/Saved results/t_estimates.txt")
 
 # Absolute bias
 # ----------------------------------------------------------------------- #
 # Calculate the aboslute bias for each condition (number of outliers) for
 # the OLS estimates
 biasOLS <- abbias(OLS_estimates$OLSmatrix, c(0,0,0))
-dput(biasOLS, "2. Research Report/R scripts/Data/biasOLS.txt")
-biasOLS <- dget("2. Research Report/R scripts/Data/biasOLS.txt")
+dput(biasOLS, "2. Research Report/R scripts/Saved results/biasOLS.txt")
+biasOLS <- dget("2. Research Report/R scripts/Saved results/biasOLS.txt")
 
 
 # Calculate the aboslute bias for each condition (number of outliers) for
 # the 20% trimmed mean estimates
 biastrimmed <- abbias(t_estimates$tmeanmatrix, c(0,0,0))
-dput(biastrimmed, "2. Research Report/R scripts/Data/biastrimmed.txt")
-biastrimmed <- dget("2. Research Report/R scripts/Data/biastrimmed.txt")
+dput(biastrimmed, "2. Research Report/R scripts/Saved results/biastrimmed.txt")
+biastrimmed <- dget("2. Research Report/R scripts/Saved results/biastrimmed.txt")
 
 # Bias plot
 # Visualizes the bias for the different estimates for group 3, the group
@@ -87,15 +87,15 @@ dev.off()
 # for the OLS estimates
 covOLS <- covprob(OLS_estimates$OLSmatrix, OLS_estimates$SEmatrix, 
 									c(0,0,0), type=1)
-dput(covOLS, "2. Research Report/R scripts/Data/covOLS.txt")
-covOLS <- dget("2. Research Report/R scripts/Data/covOLS.txt")
+dput(covOLS, "2. Research Report/R scripts/Saved results/covOLS.txt")
+covOLS <- dget("2. Research Report/R scripts/Saved results/covOLS.txt")
 
 # Calculate the coverage probability for each condition (number of outliers) 
 # for the 20% trimmed mean estimates
 cov_t <- covprob(t_estimates$tmeanmatrix, t_estimates$trimSEmatrix, 
 									c(0,0,0), type=2)
-dput(cov_t, "2. Research Report/R scripts/Data/cov_t.txt")
-cov_t <- dget("2. Research Report/R scripts/Data/cov_t.txt")
+dput(cov_t, "2. Research Report/R scripts/Saved results/cov_t.txt")
+cov_t <- dget("2. Research Report/R scripts/Saved results/cov_t.txt")
 
 # Coverage probability plot
 # Visualizes the coverage probability for the different estimates for the
@@ -141,14 +141,14 @@ dev.off()
 # Calculate BFs with OLS estimates (note : can take a while)
 BFresultsOLS <- BFcalc(estimates = OLS_estimates$OLSmatrix, 
 											 se = OLS_estimates$SEmatrix)
-dput(BFresultsOLS, "2. Research Report/R scripts/Data/BFresultsOLS.txt")
-BFresultsOLS <- dget("2. Research Report/R scripts/Data/BFresultsOLS.txt")
+dput(BFresultsOLS, "2. Research Report/R scripts/Saved results/BFresultsOLS.txt")
+BFresultsOLS <- dget("2. Research Report/R scripts/Saved results/BFresultsOLS.txt")
 
 # Calculate BFs with trimmed mean estimates (note : can take a while)
 BFresultstrimmed <- BFcalc(estimates = t_estimates$tmeanmatrix, 
 													 se = t_estimates$trimSEmatrix)
-dput(BFresultstrimmed, "2. Research Report/R scripts/Data/BFresultstrimmed.txt")
-BFresultstrimmed <- dget("2. Research Report/R scripts/Data/BFresultstrimmed.txt")
+dput(BFresultstrimmed, "2. Research Report/R scripts/Saved results/BFresultstrimmed.txt")
+BFresultstrimmed <- dget("2. Research Report/R scripts/Saved results/BFresultstrimmed.txt")
 
 # Substract results to make a plot 
 all.BFOLS <- BFresultsOLS$all.BF
@@ -212,10 +212,10 @@ rm(outdata)
 # Estimation P2
 # ----------------------------------------------------------------------- #
 OLS_estimates_pop2 <- OLSestimation(pop2)
-dput(OLS_estimates_pop2, "2. Research Report/R scripts/Data/OLS_estimates_pop2.txt")
+dput(OLS_estimates_pop2, "2. Research Report/R scripts/Saved results/OLS_estimates_pop2.txt")
 
 t_estimates_pop2 <- tmean(pop2, 0.2)
-dput(t_estimates_pop2, "2. Research Report/R scripts/Data/t_estimates_pop2.txt")
+dput(t_estimates_pop2, "2. Research Report/R scripts/Saved results/t_estimates_pop2.txt")
 
 # Calculate the Bayes factors for the hypothesis with the OLS estimates as 
 # input for Bain. 
@@ -223,15 +223,15 @@ dput(t_estimates_pop2, "2. Research Report/R scripts/Data/t_estimates_pop2.txt")
 # Calculate BFs with OLS estimates (note : can take a while)
 BFresultsOLS_pop2 <- BFcalc(estimates = OLS_estimates_pop2$OLSmatrix, 
 											 se = OLS_estimates_pop2$SEmatrix)
-dput(BFresultsOLS_pop2, "2. Research Report/R scripts/Data/BFresultsOLS_pop2.txt")
-BFresultsOLS_pop2 <- dget("2. Research Report/R scripts/Data/BFresultsOLS_pop2.txt")
+dput(BFresultsOLS_pop2, "2. Research Report/R scripts/Saved results/BFresultsOLS_pop2.txt")
+BFresultsOLS_pop2 <- dget("2. Research Report/R scripts/Saved results/BFresultsOLS_pop2.txt")
 
 
 # Calculate BFs with trimmed mean estimates (note : can take a while)
 BFresultstrimmed_pop2 <- BFcalc(estimates = t_estimates_pop2$tmeanmatrix, 
 													 se = t_estimates_pop2$trimSEmatrix)
-dput(BFresultstrimmed_pop2, "2. Research Report/R scripts/Data/BFresultstrimmed_pop2.txt")
-BFresultstrimmed_pop2 <- dget("2. Research Report/R scripts/Data/BFresultstrimmed_pop2.txt")
+dput(BFresultstrimmed_pop2, "2. Research Report/R scripts/Saved results/BFresultstrimmed_pop2.txt")
+BFresultstrimmed_pop2 <- dget("2. Research Report/R scripts/Saved results/BFresultstrimmed_pop2.txt")
 
 
 # Substract results to make a plot 
