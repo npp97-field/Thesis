@@ -5,6 +5,7 @@ The project is divided over three folders correponding to the three phases of th
 1. Project proposal
    - Final Document 
 2. Research report : aka. mini thesis about a small part of the project
-   - Document 
+   - Final Document 
    - R scripts simulations 
+   - Latex files 
 3. Thesis 
