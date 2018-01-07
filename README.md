@@ -1,5 +1,5 @@
 # Thesis
-Files related to my thesis about 'robust Bayes factors for evaluating informative hypotheses in an ANOVA context' at Utrecht University. 
+Files related to my Master's thesis at Utrecht University about Bayesian ANOVA in the presence of non-normality and/or outliers. 
 
 The project is divided over three folders correponding to the three phases of the process.
 1. Project proposal
@@ -8,4 +8,4 @@ The project is divided over three folders correponding to the three phases of th
    - Final Document 
    - R scripts simulations 
    - Latex files 
-3. Thesis 
+3. Thesis (in progress)
