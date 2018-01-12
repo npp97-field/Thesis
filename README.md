@@ -8,5 +8,5 @@ In the folders, the following documents / folders are located :
    - Final Document 
 2. Research report : mini thesis about a small part of the project
    - Final Document 
-   - R scripts : necessary scripts to repeat the generation of results / analysis
+   - R files : necessary R files to repeat the generation of simulated data, analyses, results and figures
 3. Thesis (in progress)
