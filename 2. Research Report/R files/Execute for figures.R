@@ -102,7 +102,7 @@ ggplot(data = BFplotdata, aes(x = Outliers, y = value, linetype = BF)) +
 BFplotdata_pop2 <- dget("2. Research Report/R files/Results/BFplotdata_pop2.txt")
 
 # Plot
-# pdf("2. Research report/Latex files/partII_BF_pop1.pdf", family="CM Roman", width=6, height=4)
+# pdf("2. Research report/Latex files/partII_BF_pop2.pdf", family="CM Roman", width=6, height=4)
 
 ggplot(data = BFplotdata_pop2, aes(x = Outliers, y = value, linetype = BF)) +
 	geom_line() +
