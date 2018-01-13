@@ -44,8 +44,7 @@ ggplot(biasdata, aes(x=outliers, y=bias)) +
 	scale_x_continuous(breaks=c(1, 3, 5, 7, 9, 11, 13)) +
 	scale_linetype_discrete(name="Mean estimator") +
 	labs(x = "Number of outliers", y = "Size of absolute bias") +
-	theme_few() +
-	theme(text=element_text(family="Georgia"))
+	theme_few()
 
 # dev.off()
 
@@ -62,14 +61,13 @@ covprobdata <- dget("2. Research Report/R files/Results/covprobdata.txt")
 
 ggplot(covprobdata, aes(x=outliers, y=cov_prob))+
 	geom_hline(yintercept = 0.95, color = "gray", size = 2, alpha = 1/2) + 
-	annotate("text", max(plotdata$outliers)-0.5, 0.95, vjust = 1.5, label = "95%")+
+	annotate("text", max(covprobdata$outliers)-0.5, 0.95, vjust = 1.5, label = "95%")+
 	geom_line(aes(linetype=factor(group)))+
 	scale_x_continuous(breaks=c(1,3,5,7,9,11,13))+
 	scale_linetype_discrete(name="Group")+
 	labs(x = "Number of outliers", y = "95% CI coverage probability")+
 	facet_wrap(~estimate, ncol = 2)+
-	theme_few()+
-	theme(text=element_text(family="Georgia"))
+	theme_few()
 
 # dev.off()
 
@@ -91,8 +89,7 @@ ggplot(data = BFplotdata, aes(x = Outliers, y = value, linetype = BF)) +
 	scale_linetype_manual(values=c("solid", "dashed", "dotted")) +
 	labs(x = "Number of outliers", y = "Mean size Bayes factor") +
 	theme_few() +
-	coord_cartesian(ylim = c(0, 50))+
-	theme(text=element_text(family="Georgia"))
+	coord_cartesian(ylim = c(0, 50))
 
 # dev.off()
 
@@ -114,8 +111,7 @@ ggplot(data = BFplotdata_pop2, aes(x = Outliers, y = value, linetype = BF)) +
 	scale_linetype_manual(values=c("solid", "dashed", "dotted")) +
 	labs(x = "Number of outliers", y = "Mean size Bayes factor") +
 	theme_few() +
-	coord_cartesian(ylim = c(0, 50))+
-	theme(text=element_text(family="Georgia"))
+	coord_cartesian(ylim = c(0, 50))
 
 # dev.off()
 
