@@ -12,17 +12,17 @@ loadfonts()
 # 2. Research Report/R files/Analyses/Influence functions demonstrated.R
 
 # Load saved data 
-IFcombined <- dget("2. Research Report/R files/Results/IFcombined.txt")
+IF <- dget("2. Research Report/R files/Results/IF.txt")
 
 # Plot
 # pdf("2. Research Report/Latex Files/IFillustration.pdf", family="CM Roman", width=6, height=4)
 
-ggplot(IFcombined,aes(x=x))+
-	geom_line(aes(y=IFmean, linetype="mean"))+
-	geom_line(aes(y=IFtrimmed, linetype="20% trimmed mean"))+
-	labs(y="IF(y)", x = "y")+
+ggplot(IF,aes(x = Y, y = Value, linetype = Estimator)) + 
+	geom_line() + 
+	labs(y="Value parameter estimate", x = "Additional y value") +
 	scale_linetype_discrete(name="Estimator", 
-													breaks=c("mean", "20% trimmed mean"))+
+													breaks=c("mean", "trimmed"), 
+													labels = c("mean", "20% trimmed mean"))+
 	theme(text=element_text(family="CM Roman", size=10))+
 	theme_few()
 
